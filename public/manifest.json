@@ -1,0 +1,23 @@
+{
+  "manifest_version": 2,
+  "name": "Unsplash Placeholder",
+  "version": "0.1.0",
+  "description": "Get a placeholder image from Unsplash based on your needs.",
+  "browser_action": {
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "images/icon-16x16.jpg",
+      "24": "images/icon-24x24.jpg",
+      "32": "images/icon-32x32.jpg"
+    }
+  },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+p",
+        "mac": "Command+Shift+p"
+      }
+    }
+  },
+  "background": {}
+}
