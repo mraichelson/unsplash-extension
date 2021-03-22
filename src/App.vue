@@ -40,12 +40,13 @@
       <div class="form-actions">
         <button type="submit" aria-label="Get image">Get image</button>
       </div>
-      <details open>
+      <details>
         <summary>Advanced options</summary>
         <div>
-          <p>lorem ipsum dolor sit amet.</p>
-          <div class="form-element">
-            <label for="blur">Blur</label>
+          <div class="form-element form-element-block">
+            <label for="blur"
+              >Blur <small>({{ blur }})</small></label
+            >
             <input
               type="range"
               name="blur"
@@ -55,7 +56,16 @@
               v-model="blur"
             />
           </div>
-          <button @click.prevent="saveAsDefault">Save as default</button>
+          <div class="form-element">
+            <label for="seed">Seed</label>
+            <input
+              type="text"
+              name="seed"
+              id="seed"
+              v-model="seed"
+              @focus="$event.target.select()"
+            />
+          </div>
         </div>
       </details>
     </form>
@@ -68,9 +78,24 @@ export default {
   computed: {
     imageUrl() {
       const baseUrl = 'https://picsum.photos'
-      const grayscale = this.grayscale ? 'grayscale' : ''
-      const blur = this.blur ? 'blur' : ''
-      return `${baseUrl}/${this.width}/${this.height}${grayscale}`
+
+      let seed = ''
+      if (this.seed !== '') {
+        seed = `/seed/${this.seed}`
+      }
+
+      let queryString = ''
+      const queryParams = []
+      if (this.grayscale) {
+        queryParams.push('grayscale')
+      }
+      if (this.blur > 0) {
+        queryParams.push(`blur=${this.blur}`)
+      }
+      if (queryParams.length > 0) {
+        queryString = '?' + queryParams.join('&')
+      }
+      return `${baseUrl}${seed}/${this.width}/${this.height}${queryString}`
     }
   },
   data() {
@@ -78,7 +103,8 @@ export default {
       width: 320,
       height: 240,
       grayscale: false,
-      blur: 0
+      blur: 0,
+      seed: ''
     }
   },
   methods: {
@@ -98,9 +124,6 @@ export default {
          */
         window.open(this.imageUrl)
       }
-    },
-    saveAsDefault() {
-      console.log('todo: save settings as default')
     }
   }
 }
@@ -129,6 +152,10 @@ input[type='number'] {
   padding: 0 0 0 0.5rem;
   line-height: 1.5rem;
 }
+input[type='range'] {
+  margin: 0;
+  width: 100%;
+}
 button {
   background-color: $accent;
   border: 2px solid $accent;
@@ -148,8 +175,6 @@ button {
 h1 {
   font-size: 1.5rem;
 }
-// label {
-// }
 details {
   border: 1px solid $dark;
   font-size: 0.85rem;
@@ -157,6 +182,7 @@ details {
   summary {
     background-color: rgba($accent, 0.2);
     cursor: pointer;
+    font-weight: bold;
     padding: 1rem;
     &:focus {
       outline: 3px solid $accent;
@@ -177,6 +203,13 @@ div.form-element {
   & > * {
     box-sizing: border-box;
     flex: 1;
+  }
+  &.form-element-block {
+    display: block;
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
   }
 }
 </style>
